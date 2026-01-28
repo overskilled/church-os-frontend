@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useScopedI18n } from "@/locale/client";
 
 export default function Section2() {
+  const t = useScopedI18n("website.section2");
+  
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isManual, setIsManual] = useState(false);
@@ -11,26 +15,26 @@ export default function Section2() {
 
   const liste1 = [
     {
-      title: "Service Web",
-      subtitle: "Développement de sites web modernes et responsives",
+      title: t("services.web.title"),
+      subtitle: t("services.web.subtitle"),
       image:
         "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&auto=format&fit=crop",
     },
     {
-      title: "Applications Mobile",
-      subtitle: "Applications iOS et Android performantes",
+      title: t("services.mobile.title"),
+      subtitle: t("services.mobile.subtitle"),
       image:
         "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&auto=format&fit=crop",
     },
     {
-      title: "Design UX/UI",
-      subtitle: "Interfaces utilisateur intuitives et esthétiques",
+      title: t("services.design.title"),
+      subtitle: t("services.design.subtitle"),
       image:
         "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop",
     },
     {
-      title: "Consulting",
-      subtitle: "Accompagnement stratégique digital",
+      title: t("services.consulting.title"),
+      subtitle: t("services.consulting.subtitle"),
       image:
         "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&auto=format&fit=crop",
     },
@@ -38,12 +42,11 @@ export default function Section2() {
 
   // Gestion du cycle automatique
   useEffect(() => {
-    if (isManual) return; // Si contrôle manuel, on arrête le cycle automatique
+    if (isManual) return;
 
-    const cycleDuration = 10000; // 10 secondes
-    const progressInterval = 50; // Mise à jour du progrès toutes les 50ms
+    const cycleDuration = 10000;
+    const progressInterval = 50;
 
-    // Nettoyer les intervalles existants
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -66,27 +69,20 @@ export default function Section2() {
     };
   }, [activeIndex, liste1.length, isManual]);
 
-  // Réinitialiser le progrès quand on change manuellement
   const handleAccordionClick = (index: number) => {
-    // Arrêter le cycle automatique temporairement
     setIsManual(true);
-
-    // Réinitialiser l'état
     setActiveIndex(index);
     setProgress(0);
 
-    // Nettoyer les timeouts existants
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
-    // Reprendre le cycle automatique après un délai
     timeoutRef.current = setTimeout(() => {
       setIsManual(false);
-    }, 10000); // Reprendre après 10 secondes
+    }, 10000);
   };
 
-  // Nettoyage
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -100,30 +96,85 @@ export default function Section2() {
 
   const data = [
     {
-      title: "Créez votre espace église",
-      description: "Inscrivez-vous, configurez vos branches et départements",
+      title: t("steps.create.title"),
+      description: t("steps.create.description"),
     },
     {
-      title: "Invitez vos membres a vous rejoindre",
-      description: "Partagez le lien, ils téléchargent l'app et rejoignent",
+      title: t("steps.invite.title"),
+      description: t("steps.invite.description"),
     },
     {
-      title: "Lancez vos premiers cultes",
-      description: "Créez des événements, activez les notifications, regardez",
+      title: t("steps.launch.title"),
+      description: t("steps.launch.description"),
     },
   ];
+
+  // Carousel states and functions
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === data.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? data.length - 1 : prev - 1));
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+
+    const distance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(distance) > minSwipeDistance) {
+      if (distance > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
+  // Auto slide for mobile carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [currentSlide]);
+
   return (
     <div className="w-full text-center 2xl: min-h-screen bg-foreground text-background py-15">
       <div className="max-w-[1600px] min-h-full px-4 flex flex-col gap-8 items-center justify-between mx-auto">
         <div className="w-full flex flex-col gap-4 items-center">
           <span className="rounded-2xl px-4 py-0.5 bg-white/20 border w-max border-secondary">
-            simple
+            {t("simple")}
           </span>
-          <h2 className="text-5xl text-center max-w-1/2 mx-auto leading-18">
-            Utiliser Church <strong>O.S</strong> en trois Etapes
+          <h2 className="text-5xl text-center md:max-w-1/2 mx-auto leading-18">
+            {t("title")} <strong>O.S</strong> {t("threeSteps")}
           </h2>
         </div>
-        <div className="flex gap-10 lg:h-[60vh] 2xl:h-auto lg:mt-20">
+
+        {/* Version desktop (hidden on mobile) */}
+        <div className="md:flex hidden gap-10 lg:h-[60vh] 2xl:h-auto lg:mt-20">
           {data.map((item, index) => (
             <div key={index} className="flex flex-col gap-2 w-[33%] text-start">
               <div className="rounded-xl min-w-full shadow bg-muted min-h-90"></div>
@@ -134,137 +185,78 @@ export default function Section2() {
             </div>
           ))}
         </div>
+
+        {/* Version mobile carousel (visible on mobile) */}
+        <div className="md:hidden w-full mt-8">
+          <div className="relative overflow-hidden rounded-xl">
+            {/* Carousel container */}
+            <div
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {data.map((item, index) => (
+                <div key={index} className="w-full flex-shrink-0 relative px-4">
+                  <div className="flex flex-col gap-4 items-center">
+                    {/* Card */}
+                    <div className="w-full rounded-xl shadow bg-muted min-h-80 p-6 flex flex-col justify-center items-center">
+                      <div className="mb-4">
+                        <span className="text-4xl font-bold text-primary">
+                          {/* 0{index + 1} */}
+                        </span>
+                      </div>
+                      <div className="text-end absolute bottom-0 right-6 w-2/3">
+                        <h3 className="text-xl text-muted-foreground font-bold mb-3">
+                          {item.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm text-end">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation buttons */}
+            <div className="absolute left-2 bottom-0 flex gap-4 -translate-y-1/2">
+              <button
+                onClick={prevSlide}
+                className="bg-foreground text-muted rounded-full p-2 hover:bg-background transition-colors"
+                aria-label={t("previousSlide")}
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="bg-foreground text-muted rounded-full p-2 hover:bg-background transition-colors"
+                aria-label={t("nextSlide")}
+              >
+                <ChevronRight size={24} />
+              </button>
+            </div>
+
+            {/* Dots indicator */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {data.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    currentSlide === index
+                      ? "bg-background w-8"
+                      : "bg-background/40"
+                  }`}
+                  aria-label={`${t("goToSlide")} ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
-
-// <div className="min-h-screen w-full my-20 max-w-[1600px] mx-auto px-4 @min-3xl:px-0 flex flex-col gap-10 py-10">
-
-//   <div className="w-full p-2 px-4 h-screen border border-secondary flex flex-row-reverse rounded-lg bg-background">
-//     <div className="flex w-[30%] flex-col justify-between">
-//       <div className="py-4">
-//         <p className="text-2xl font-bold text-foreground">
-//           Ce que nous proposons
-//         </p>
-//         <p className="text-muted-foreground mt-2">
-//           Découvrez nos services innovants
-//         </p>
-//       </div>
-
-//       <div className="h-[80%] w-full flex flex-col justify-end gap-4">
-//         {liste1.map((item, index) => (
-//           <div
-//             key={index}
-//             className={`border rounded-lg overflow-hidden transition-all duration-300 cursor-pointer ${
-//               activeIndex === index
-//                 ? "border-foreground bg-foreground/10 shadow-lg"
-//                 : "border-border hover:border-foreground"
-//             }`}
-//             onClick={() => handleAccordionClick(index)}
-//           >
-//             {/* Séparateur avec barre de progression */}
-//             <div className="h-1 w-full relative overflow-hidden">
-//               {activeIndex === index && (
-//                 <div
-//                   className="h-full bg-gradient-to-r from-foreground to-foreground/70 transition-all duration-300 ease-linear"
-//                   style={{ width: `${progress}%` }}
-//                 />
-//               )}
-//             </div>
-
-//             {/* Contenu de l'accordéon */}
-//             <div className="p-4">
-//               <div className="flex items-center justify-between">
-//                 <div>
-//                   <h3 className="font-bold text-lg text-muted-foreground">
-//                     {item.title}
-//                   </h3>
-//                   <p className="text-foreground text-sm mt-1">
-//                     {item.subtitle}
-//                   </p>
-//                 </div>
-
-//                 {/* Indicateur visuel */}
-//                 <div className="flex items-center space-x-2">
-//                   <div
-//                     className={`w-3 h-3 rounded-full transition-all duration-300 ${
-//                       activeIndex === index
-//                         ? "bg-accent scale-125"
-//                         : "bg-foreground"
-//                     }`}
-//                   />
-//                   <div className="relative w-8 h-8 overflow-hidden rounded-md border border-border">
-//                     <img
-//                       src={item.image}
-//                       alt={item.title}
-//                       className={`w-full h-full object-cover transition-all duration-500 ${
-//                         activeIndex === index
-//                           ? "opacity-100"
-//                           : "opacity-40 grayscale"
-//                       }`}
-//                     />
-//                     {/* Overlay de progression */}
-//                     {activeIndex === index && (
-//                       <div
-//                         className="absolute top-0 left-0 h-full bg-accent/10 transition-all duration-300"
-//                         style={{ width: `${progress}%` }}
-//                       />
-//                     )}
-//                   </div>
-//                 </div>
-//               </div>
-
-//               {/* Contenu détaillé (visible uniquement quand actif) */}
-//               {activeIndex === index && (
-//                 <div className="mt-4 pt-4 border-t border-border">
-//                   <p className="text-foreground">
-//                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-//                     Sed do eiusmod tempor incididunt ut labore et dolore
-//                     magna aliqua.
-//                   </p>
-//                   <button className="mt-3 px-4 py-2 bg-foreground text-background rounded-lg text-sm hover:bg-foreground/90 transition-colors">
-//                     En savoir plus
-//                   </button>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Indicateur de cycle en bas */}
-//       {/* <div className="py-4">
-//           <div className="flex items-center justify-between text-sm text-foreground">
-//             <span>Cycle automatique toutes les 10 secondes</span>
-//             <span className="font-medium">
-//               {activeIndex + 1} / {liste1.length}
-//             </span>
-//           </div>
-//         </div> */}
-//     </div>
-
-//     {/* Image principale */}
-//     <div className="flex w-[70%] rounded-lg h-full overflow-hidden ml-4 relative">
-//       <img
-//         src={liste1[activeIndex].image}
-//         className="w-full h-full object-cover transition-all duration-700 ease-in-out"
-//         alt={liste1[activeIndex].title}
-//       />
-
-//       {/* Overlay de progression sur l'image principale */}
-//       <div className="absolute top-0 left-0 w-full h-1 bg-foreground/10">
-//         <div
-//           className="h-full bg-gradient-to-r from-foreground to-foreground/70 transition-all duration-300 ease-linear"
-//           style={{ width: `${progress}%` }}
-//         />
-//       </div>
-
-//       {/* Légende de l'image */}
-//       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6 text-white">
-//         <h3 className="text-2xl font-bold">{liste1[activeIndex].title}</h3>
-//         <p className="mt-2 opacity-90">{liste1[activeIndex].subtitle}</p>
-//       </div>
-//     </div>
-//   </div>
-// </div>

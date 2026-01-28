@@ -1,103 +1,136 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
-
-const faqSections = [
-  {
-    category: "Fonctionnalités",
-    questions: [
-      {
-        question: "ChurchOS est-il adapté aux petites comme aux grandes églises ?",
-        answer: "Absolument. ChurchOS est conçu pour s'adapter à toutes les tailles d'églises. Que vous soyez une petite assemblée de 50 membres ou une grande église de plusieurs milliers avec des branches multiples, notre plateforme s'adapte à vos besoins."
-      },
-      {
-        question: "Puis-je gérer plusieurs branches d'église avec une seule interface ?",
-        answer: "Oui, ChurchOS a été spécialement conçu pour les églises multi-branches. Vous pouvez créer et gérer différentes branches, avec des données séparées par branche tout en ayant une vue consolidée globale."
-      },
-      {
-        question: "L'application fonctionne-t-elle avec une connexion Internet limitée ?",
-        answer: "Oui, nous avons optimisé ChurchOS pour les contextes à faible connectivité. L'application mobile supporte le mode offline pour les sermons téléchargés, la lecture de la Bible, et certaines fonctionnalités."
-      }
-    ]
-  },
-  {
-    category: "Sécurité & Données",
-    questions: [
-      {
-        question: "Comment protégez-vous les données sensibles de notre église ?",
-        answer: "Nous utilisons un chiffrement de niveau bancaire (AES-256) pour toutes les données. Chaque église dispose d'un environnement isolé et nous ne vendons ni ne partageons jamais vos données."
-      },
-      {
-        question: "Qui a accès aux informations financières ?",
-        answer: "Seuls les utilisateurs avec les rôles spécifiques (Trésorier, Pasteur principal, Administrateur) peuvent accéder aux données financières. Toutes les actions sont journalisées."
-      },
-      {
-        question: "Où sont stockées nos données ?",
-        answer: "Toutes les données sont stockées sur des serveurs sécurisés en France (RGPD compliant). Des sauvegardes automatiques sont effectuées quotidiennement."
-      }
-    ]
-  },
-  {
-    category: "Tarification",
-    questions: [
-      {
-        question: "Quel est le modèle de tarification ?",
-        answer: "Nous proposons un modèle SaaS basé sur le nombre de membres actifs. Trois formules disponibles avec un essai gratuit de 30 jours."
-      },
-      {
-        question: "Y a-t-il des frais pour les dons via Mobile Money ?",
-        answer: "Seuls les frais des opérateurs (MTN/Orange) s'appliquent. ChurchOS ne prélève aucune commission supplémentaire sur les dons."
-      },
-      {
-        question: "Puis-je changer de formule à tout moment ?",
-        answer: "Oui, vous pouvez modifier votre formule à tout moment depuis votre tableau de bord, sans frais supplémentaires."
-      }
-    ]
-  },
-  {
-    category: "Support & Déploiement",
-    questions: [
-      {
-        question: "Combien de temps pour déployer ChurchOS ?",
-        answer: "La configuration initiale prend 2-3 jours. Nous vous accompagnons personnellement pendant tout le processus."
-      },
-      {
-        question: "Proposez-vous une formation ?",
-        answer: "Oui, nous incluons 3 sessions de formation et fournissons une documentation complète avec tutoriels vidéo."
-      },
-      {
-        question: "Quelles langues sont supportées ?",
-        answer: "ChurchOS est entièrement bilingue Français/Anglais, avec d'autres langues prévues prochainement."
-      }
-    ]
-  }
-];
+import { useScopedI18n } from "@/locale/client";
+import { Button } from "../ui/button";
 
 export default function Section4() {
+  const t = useScopedI18n("website.section4.faq");
+  
+  const faqSections = [
+    {
+      category: t("sections.features.category"),
+      questions: [
+        {
+          question: t("sections.features.questions.churchSize"),
+          answer: t("sections.features.answers.churchSize")
+        },
+        {
+          question: t("sections.features.questions.branchManagement"),
+          answer: t("sections.features.answers.branchManagement")
+        },
+        {
+          question: t("sections.features.questions.offlineMode"),
+          answer: t("sections.features.answers.offlineMode")
+        }
+      ]
+    },
+    {
+      category: t("sections.security.category"),
+      questions: [
+        {
+          question: t("sections.security.questions.dataProtection"),
+          answer: t("sections.security.answers.dataProtection")
+        },
+        {
+          question: t("sections.security.questions.financialAccess"),
+          answer: t("sections.security.answers.financialAccess")
+        },
+        {
+          question: t("sections.security.questions.dataStorage"),
+          answer: t("sections.security.answers.dataStorage")
+        }
+      ]
+    },
+    {
+      category: t("sections.pricing.category"),
+      questions: [
+        {
+          question: t("sections.pricing.questions.pricingModel"),
+          answer: t("sections.pricing.answers.pricingModel")
+        },
+        {
+          question: t("sections.pricing.questions.donationFees"),
+          answer: t("sections.pricing.answers.donationFees")
+        },
+        {
+          question: t("sections.pricing.questions.planChange"),
+          answer: t("sections.pricing.answers.planChange")
+        }
+      ]
+    },
+    {
+      category: t("sections.support.category"),
+      questions: [
+        {
+          question: t("sections.support.questions.deploymentTime"),
+          answer: t("sections.support.answers.deploymentTime")
+        },
+        {
+          question: t("sections.support.questions.training"),
+          answer: t("sections.support.answers.training")
+        },
+        {
+          question: t("sections.support.questions.languages"),
+          answer: t("sections.support.answers.languages")
+        }
+      ]
+    }
+  ];
+
   const [openItems, setOpenItems] = useState<number[]>([]);
+  const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const toggleItem = (index: number) => {
-    setOpenItems(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
+    const contentElement = contentRefs.current[index];
+    
+    if (openItems.includes(index)) {
+      // Fermeture avec animation
+      if (contentElement) {
+        contentElement.style.maxHeight = contentElement.scrollHeight + "px";
+        // Force reflow
+        contentElement.offsetHeight;
+        contentElement.style.maxHeight = "0px";
+        
+        setTimeout(() => {
+          setOpenItems(prev => prev.filter(i => i !== index));
+          if (contentElement) {
+            contentElement.style.maxHeight = "";
+          }
+        }, 300);
+      } else {
+        setOpenItems(prev => prev.filter(i => i !== index));
+      }
+    } else {
+      // Ouverture avec animation
+      setOpenItems(prev => [...prev, index]);
+      setTimeout(() => {
+        if (contentElement) {
+          contentElement.style.maxHeight = contentElement.scrollHeight + "px";
+          setTimeout(() => {
+            if (contentElement) {
+              contentElement.style.maxHeight = "none";
+            }
+          }, 300);
+        }
+      }, 10);
+    }
   };
 
   return (
-    <div className="w-full bg-muted py-20 px-4 md:px-8">
+    <div className="w-full bg-background py-20 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header minimaliste */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center gap-2 mb-4">
             <HelpCircle className="w-6 h-6 text-gray-600" />
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-              FAQ
+              {t("title")}
             </h2>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Réponses aux questions les plus fréquentes sur ChurchOS
+            {t("subtitle")}
           </p>
         </div>
 
@@ -119,16 +152,16 @@ export default function Section4() {
                   return (
                     <div 
                       key={itemIndex} 
-                      className="border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+                      className="border border-gray-200 rounded-lg hover:border-gray-300 transition-all duration-200"
                     >
                       <button
                         onClick={() => toggleItem(globalIndex)}
-                        className="w-full px-6 py-4 flex items-center justify-between text-left"
+                        className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors duration-200 rounded-lg"
                       >
                         <span className="text-gray-900 font-medium pr-4">
                           {item.question}
                         </span>
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 transition-transform duration-300">
                           {isOpen ? (
                             <ChevronUp className="w-5 h-5 text-gray-500" />
                           ) : (
@@ -137,14 +170,24 @@ export default function Section4() {
                         </div>
                       </button>
                       
-                      {/* Answer */}
-                      {isOpen && (
+                      {/* Answer with smooth animation */}
+                      <div
+                        ref={el => {
+                          contentRefs.current[globalIndex] = el;
+                        }}
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                          isOpen ? '' : 'max-h-0'
+                        }`}
+                        style={{
+                          maxHeight: isOpen ? 'none' : '0px'
+                        }}
+                      >
                         <div className="px-6 pb-4 border-t border-gray-100 pt-4">
-                          <p className="text-gray-600 leading-relaxed">
+                          <p className="text-gray-600 leading-relaxed animate-in slide-in-from-top-2 duration-200">
                             {item.answer}
                           </p>
                         </div>
-                      )}
+                      </div>
                     </div>
                   );
                 })}
@@ -160,20 +203,20 @@ export default function Section4() {
 
         {/* CTA Section - Minimaliste */}
         <div className="mt-20 text-center">
-          <div className="inline-block border border-gray-200 rounded-2xl p-8">
+          <div className="inline-block border border-gray-200 rounded-2xl p-8 animate-in fade-in duration-500">
             <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Une question spécifique ?
+              {t("cta.title")}
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Contactez notre équipe pour une réponse personnalisée.
+              {t("cta.subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button className="px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                Contacter l'équipe
-              </button>
-              <button className="px-6 py-3 border border-gray-300 text-gray-900 font-medium rounded-lg hover:bg-gray-50 transition-colors">
-                Voir la documentation
-              </button>
+              <Button  className="px-6 py-3 text-foreground bg-transparent hover:bg-foreground hover:text-muted">
+                {t("cta.contact")}
+              </Button>
+              <Button  className="px-6 py-3 border bg-foreground text-muted hover:bg-transparent hover:border-foreground hover:text-foreground">
+                {t("cta.documentation")}
+              </Button>
             </div>
           </div>
         </div>
