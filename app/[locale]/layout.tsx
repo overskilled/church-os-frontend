@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { I18nProviderClient } from "@/locale/client";
+import AOSProvider from "@/components/AOSProvider";
 
 
 const inter = Inter({
@@ -36,7 +37,7 @@ export default async function RootLayout({
       <body
         className={`${notoSerif.variable} ${inter.variable} antialiased`}
       >
-        <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
+       <AOSProvider /> <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
       </body>
     </html>
   );

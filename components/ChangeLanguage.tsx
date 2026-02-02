@@ -15,14 +15,14 @@ export default function ChangeLanguage() {
   return (
     <div className="flex gap-2 p-0 ">
       <Button
-        variant={"hero1"}
+        // variant={"hero1"}
         className={`${language === "en" ? "bg-background text-foreground hover:text-background" : "text-background"} `}
         onClick={() => handleChangeLanguage("en")}
       >
         En
       </Button>
       <Button
-        variant={"hero1"}
+        // variant={"hero1"}
         className={`${language === "fr" ? "bg-background text-foreground" : "text-background"} `}
         onClick={() => handleChangeLanguage("fr")}
       >
