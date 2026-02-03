@@ -64,10 +64,10 @@ export default function Hero() {
               >
                 <ChangeLanguage />
               <Button variant={"hero1"}>
-                <Link href={"/login"}>{t("signIn")}</Link>
+                <Link href={"/userRegister"}>{t("signIn")}</Link>
               </Button>
               <Button variant={"hero2"}>
-                <Link href={"/register"}>{t("talkToUs")}</Link>
+                <Link href={"/churchRegister"}>{t("talkToUs")}</Link>
               </Button>
               </div>
               <ChevronLeft
