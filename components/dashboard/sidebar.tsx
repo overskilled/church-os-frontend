@@ -23,7 +23,8 @@ import {
   Bell,
   Shield,
   UserCircle,
-  Church
+  Church,
+  Speaker
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -50,23 +51,28 @@ export function AppSidebar() {
   
   const menuItems = [
     { 
-      name: "Dashboard", 
-      link: "/churchDashboard", 
-      icon: Home 
-    },
-    { 
       name: "Gestion des Membres", 
-      link: "/members", 
+      link: "/churchDashboard", 
       icon: Users 
     },
     { 
+      name: "Annonces et sermon", 
+      link: "/churchDashboard/Annonces", 
+      icon: Speaker 
+    },
+    { 
       name: "Branches & Ministères", 
-      link: "/branches", 
+      link: "/churchDashboard/branches", 
       icon: GitBranch 
     },
     { 
+      name: "temoignage", 
+      link: "/churchDashboard/temoignage", 
+      icon: Calendar 
+    },
+    { 
       name: "Gestion des Événements", 
-      link: "/events", 
+      link: "/churchDashboard/events", 
       icon: Calendar 
     },
     { 
@@ -114,8 +120,8 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r">
-      <SidebarHeader className="p-6">
+    <Sidebar className="border-r bg-foreground">
+      <SidebarHeader className="p-6 bg-foreground">
         <div className="flex items-center gap-3 text-muted">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-blue-600">
             <Church className="h-6 w-6 text-white" />
@@ -127,7 +133,7 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-4">
+      <SidebarContent className="px-4 bg-foreground">
         <SidebarMenu className="space-y-1">
           {menuItems.map((item) => {
             const active = isActive(item.link);
@@ -140,13 +146,13 @@ export function AppSidebar() {
                   isActive={active}
                   className={`w-full justify-start gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors
                     ${active 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                      ? 'bg-background  text-foreground shadow-sm' 
+                      : 'text-muted hover:bg-accent hover:text-foreground'
                     }`}
                 >
-                  <Link href={item.link}>
-                    <Icon className="h-5 w-5" />
-                    <span>{item.name}</span>
+                  <Link href={item.link} className=" ">
+                    <Icon className="h-5 w-5 text-muted" />
+                    <span className="">{item.name}</span>
                     {active && (
                       <div className="ml-auto h-2 w-2 rounded-full bg-purple-600" />
                     )}
@@ -158,7 +164,7 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-4">
+      <SidebarFooter className="border-t p-4 bg-foreground">
         <div className="flex items-center gap-3 rounded-lg p-3 hover:bg-accent transition-colors">
           <Avatar className="h-10 w-10">
             <AvatarImage src={user.avatar} alt={user.name} />
@@ -167,14 +173,14 @@ export function AppSidebar() {
             </AvatarFallback>
           </Avatar>
           
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 text-muted">
             <p className="text-sm font-medium truncate">{user.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{user.role}</p>
-            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            <p className="text-xs text-muted truncate">{user.role}</p>
+            <p className="text-xs text-muted truncate">{user.email}</p>
           </div>
           
           <button className="ml-auto rounded-md p-1.5 hover:bg-accent">
-            <Bell className="h-4 w-4 text-muted-foreground" />
+            <Bell className="h-4 w-4 text-muted" />
           </button>
         </div>
       </SidebarFooter>

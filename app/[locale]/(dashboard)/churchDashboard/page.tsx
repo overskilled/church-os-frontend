@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,82 +10,57 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Search, Plus, Trash2, Filter } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { useEffect } from "react"
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Search, Plus, Trash2, Filter, Edit, Trash, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+import { departement, genre, Role } from "@/types/auth";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { useAuth } from "@/contexts/context";
+
+interface user {
+  id: string;
+  email: string;
+  phone: string;
+  createdAt: Date;
+  fullName: string;
+  gender: genre;
+  role: Role;
+  department: departement;
+}
 
 export default function Page() {
-    useEffect(() => {
-        const getData = async () => {
-            const data = await fetch("")
-        }
-    },[])
-
-  const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },
-  ]
+  const { users, updateUser } = useAuth();
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "Paid":
-        return <Badge variant="default">Payé</Badge>
+        return <Badge variant="default">Payé</Badge>;
       case "Pending":
-        return <Badge variant="secondary">En attente</Badge>
+        return <Badge variant="secondary">En attente</Badge>;
       case "Unpaid":
-        return <Badge variant="destructive">Impayé</Badge>
+        return <Badge variant="destructive">Impayé</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
 
+  const handleSubmit = async () => {
+    // updateUser()
+  }
   return (
     <div className="min-h-screen bg-background p-6 space-y-6 min-w-full">
       {/* Header Section */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Bienvenue Pasteur Jean</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          Bienvenue Pasteur Jean
+        </h1>
         <p className="text-lg text-muted-foreground">
           Nous sommes ravis de vous voir aujourd'hui
         </p>
@@ -94,15 +69,21 @@ export default function Page() {
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-lg border p-4">
-          <p className="text-sm font-medium text-muted-foreground mb-1">Total Membres</p>
-          <p className="text-2xl font-bold">245</p>
+          <p className="text-sm font-medium text-muted-foreground mb-1">
+            Total Membres
+          </p>
+          {/* <p className="text-2xl font-bold">{users}</p> */}
         </div>
         <div className="rounded-lg border p-4">
-          <p className="text-sm font-medium text-muted-foreground mb-1">Présence Dimanche</p>
+          <p className="text-sm font-medium text-muted-foreground mb-1">
+            Présence Dimanche
+          </p>
           <p className="text-2xl font-bold">189</p>
         </div>
         <div className="rounded-lg border p-4">
-          <p className="text-sm font-medium text-muted-foreground mb-1">Nouveaux Ce Mois</p>
+          <p className="text-sm font-medium text-muted-foreground mb-1">
+            Nouveaux Ce Mois
+          </p>
           <p className="text-2xl font-bold">24</p>
         </div>
       </div>
@@ -110,29 +91,94 @@ export default function Page() {
       {/* Actions & Search Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="space-y-1">
-          <h2 className="text-xl font-semibold">Les fidèles de l'Église de la Victoire</h2>
+          <h2 className="text-xl font-semibold">
+            Les fidèles de l'Église de la Victoire
+          </h2>
           <p className="text-sm text-muted-foreground">
             Gestion complète des membres et des contributions
           </p>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input 
-              placeholder="Rechercher un membre..." 
-              className="pl-9"
-            />
+            <Input placeholder="Rechercher un membre..." className="pl-9" />
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="gap-2">
+            {/* <Button variant="outline" size="sm" className="gap-2">
               <Filter className="h-4 w-4" />
               Filtrer
-            </Button>
-            <Button size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Ajouter
-            </Button>
+            </Button> */}
+            <Dialog>
+              <DialogTrigger>
+                <Button size="sm" className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Ajouter
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="gap-0">
+                <DialogTitle>cher 
+                    {/* {user.name}, */}
+                    </DialogTitle>
+                <DialogDescription>
+                  entrer les donnees a modifier
+                </DialogDescription>
+                <form className="mt-4 space-y-2" onSubmit={handleSubmit}>
+                  <Input
+                    name="fullName"
+                    id="fullName"
+                    className="rounded-none"
+                    placeholder="fullName"
+                  />
+                  <Input
+                    name="phone"
+                    id="phone"
+                    className="rounded-none"
+                    placeholder="phone"
+                  />
+                  <Input
+                    name="email"
+                    id="email"
+                    className="rounded-none"
+                    placeholder="email"
+                  />
+                  <Input
+                    name="genre"
+                    id="genre"
+                    className="rounded-none"
+                    placeholder="genre"
+                  />
+                  <Input
+                    name="role"
+                    id="role"
+                    className="rounded-none"
+                    placeholder="role"
+                  />
+                  <Input
+                    name="departement"
+                    id="departement"
+                    className="rounded-none"
+                    placeholder="departement"
+                  />
+                  <div className="flex gap-2">
+                    {" "}
+                    <Input
+                      name="dateOfBirth"
+                      id="dateOfBirth"
+                      className="rounded-none"
+                      placeholder="dateOfBirth"
+                    />
+                    <Input
+                      name="placeOfBirth"
+                      id="datplaceOfBirtheOfBirth"
+                      className="rounded-none"
+                      placeholder="placeOfBirth"
+                    />
+                  </div>
+                  <Button className="w-full bg-foreground">Submit</Button>
+                </form>
+              </DialogContent>
+            </Dialog>
             <Button variant="destructive" size="sm" className="gap-2">
               <Trash2 className="h-4 w-4" />
               Supprimer
@@ -146,19 +192,40 @@ export default function Page() {
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow>
-              <TableHead className="font-semibold">Facture</TableHead>
-              <TableHead className="font-semibold">Statut</TableHead>
-              <TableHead className="font-semibold">Méthode de paiement</TableHead>
-              <TableHead className="font-semibold text-right">Montant</TableHead>
+              <TableHead className="font-semibold">fullName</TableHead>
+              <TableHead className="font-semibold text-right">phone</TableHead>
+              <TableHead className="font-semibold">sex</TableHead>
+              <TableHead className="font-semibold">email</TableHead>
+              <TableHead className="font-semibold">role</TableHead>
+              <TableHead className="font-semibold text-right">edit</TableHead>
+              <TableHead className="font-semibold text-right">delete</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.invoice} className="hover:bg-muted/50">
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{getStatusBadge(invoice.paymentStatus)}</TableCell>
-                <TableCell className="font-medium">{invoice.paymentMethod}</TableCell>
-                <TableCell className="text-right font-semibold">{invoice.totalAmount}</TableCell>
+            {users?.map((el) => (
+              <TableRow key={el.id} className="hover:bg-muted/50">
+                <TableCell className="font-medium">
+                  {el.fullName}
+                </TableCell>
+                <TableCell className="text-right font-semibold">
+                  {el.phone}
+                </TableCell>
+                <TableCell className="font-medium">{el.gender}</TableCell>
+                {/* <TableCell>{getStatusBadge(el.email)}</TableCell>
+                <TableCell>{getStatusBadge(el.role)}</TableCell> */}
+                <TableCell className="text-right font-semibold">
+                  <Dialog>
+                    <DialogTrigger>
+                      <Edit />
+                    </DialogTrigger>
+                    <DialogContent>andy</DialogContent>
+                  </Dialog>
+                </TableCell>
+                <TableCell className="text-right font-semibold">
+                  <Button variant={"destructive"}>
+                    <Trash />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -218,5 +285,5 @@ export default function Page() {
         </div>
       </div> */}
     </div>
-  )
+  );
 }

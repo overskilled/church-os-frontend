@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Inter, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { I18nProviderClient } from "@/locale/client";
 import AOSProvider from "@/components/AOSProvider";
-
+import { AuthProvider } from "@/contexts/context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,10 +34,11 @@ export default async function RootLayout({
   const { locale } = await params;
   return (
     <html lang={locale}>
-      <body
-        className={`${notoSerif.variable} ${inter.variable} antialiased`}
-      >
-       <AOSProvider /> <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
+      <body className={`${notoSerif.variable} ${inter.variable} antialiased`}>
+        <AOSProvider />
+        <AuthProvider>
+          <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
+        </AuthProvider>
       </body>
     </html>
   );
